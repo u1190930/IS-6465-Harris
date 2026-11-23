@@ -11,9 +11,9 @@ require_once __DIR__.'/../includes/nav.php';
     <form class="tutoring-request-form" action="process-request.php" method="post">
         <input type="hidden" name="form_name" value="tutoring_request">
 
-        <input type="hidden" name="csrf_token" value="<?= escapeHtml(csrfToken()) ?>">
-        <div class="form-field"><label for="student_name">Student name</label><input id="student_name" value="<?= escapeHtml($user['full_name']) ?>" readonly></div>
-        <div class="form-field"><label for="student_email">Student email</label><input id="student_email" value="<?= escapeHtml($user['email']) ?>" readonly></div>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken(), ENT_QUOTES, 'UTF-8') ?>">
+        <div class="form-field"><label for="student_name">Student name</label><input id="student_name" value="<?= htmlspecialchars($user['full_name'], ENT_QUOTES, 'UTF-8') ?>" readonly></div>
+        <div class="form-field"><label for="student_email">Student email</label><input id="student_email" value="<?= htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8') ?>" readonly></div>
         <div class="form-field">
             <label for="course">Course</label>
 

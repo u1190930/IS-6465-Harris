@@ -10,13 +10,24 @@ This version uses PHP 7-compatible syntax and requires the PDO SQLite and mbstri
 
 ## Run in GitHub Codespaces
 
-1. Choose one database path:
-   - **New Lab 7 database:** `rm -f database/tutoring.db && sqlite3 database/tutoring.db < database/setup-database.sql`
-   - **Existing Lab 6 database:** `sqlite3 database/tutoring.db < database/migrate-lab6-to-lab7.sql`, then run `sqlite3 database/tutoring.db < database/setup-database.sql`.
+1. Create the Lab 7 database from the project root:
 
-   The migration script is intentionally a one-time operation. It adds `students.user_id` without removing existing Lab 6 students or tutoring requests.
+   ```bash
+   sqlite3 database/tutoring.db < database/setup-database.sql
+   php database/create-admin.php "System Administrator" admin@example.edu "ChangeThisPassword123"
+   ```
+
+   To preserve an existing Lab 6 `tutoring.db`, run the one-time upgrade first:
+
+   ```bash
+   sqlite3 database/tutoring.db < database/upgrade-to-user-management.sql
+   sqlite3 database/tutoring.db < database/setup-database.sql
+   php database/create-admin.php "System Administrator" admin@example.edu "ChangeThisPassword123"
+   ```
+
+   The upgrade adds `users` and `students.user_id` without deleting existing Lab 6 students or tutoring requests. Do not run it twice.
 2. Run `php -S 0.0.0.0:8000 php/router.php` and open forwarded port 8000.
-3. Visit `/` or `/index.php`; it opens login. Create a Student or Tutor account at `/php/register.php`. The bootstrap administrator is `admin@example.edu` with password `password`; change or remove this classroom-only account before deployment.
+3. Visit `/` or `/index.php`; it opens login. Create a Student or Tutor account at `/php/register.php`; use the administrator account created in step 1 for administrative functions.
 4. Students may submit, view, edit, and cancel only their own Open requests. Administrators may manage all requests and accounts. Tutors have no tutoring-request workflow.
 5. Run `php tests/integration-tests.php` and `php tests/user-management-tests.php` in a separate terminal. The Lab 4 validation checks remain in `tests/validation-tests.php`.
 
