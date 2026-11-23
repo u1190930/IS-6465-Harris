@@ -1,0 +1,8 @@
+<?php
+require_once dirname(__DIR__).'/repositories/userPDO.php';
+function startSecureSession() { if(session_status()===PHP_SESSION_NONE){$https=!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off';session_set_cookie_params(['lifetime'=>0,'path'=>'/','secure'=>$https,'httponly'=>true,'samesite'=>'Lax']);session_start();} }
+function csrfToken(){startSecureSession();if(empty($_SESSION['csrf_token']))$_SESSION['csrf_token']=bin2hex(random_bytes(32));return $_SESSION['csrf_token'];}
+function verifyCsrfToken($input){startSecureSession();if(!isset($input['csrf_token'],$_SESSION['csrf_token'])||!hash_equals($_SESSION['csrf_token'],(string)$input['csrf_token'])){http_response_code(403);exit('Invalid form token.');}}
+function logoutSession(){startSecureSession();$_SESSION=[];if(ini_get('session.use_cookies')){$p=session_get_cookie_params();setcookie(session_name(),'',time()-42000,$p['path'],$p['domain'],$p['secure'],$p['httponly']);}session_destroy();}
+function requireLogin($pdo){startSecureSession();if(empty($_SESSION['user_id'])){header('Location: login.php',true,303);exit;}if(time()-(int)($_SESSION['last_activity']??0)>1200){logoutSession();header('Location: login.php?expired=1',true,303);exit;}$u=findUserById($pdo,(int)$_SESSION['user_id']);if(!$u||$u['status']!=='Active'){logoutSession();header('Location: login.php?inactive=1',true,303);exit;}$_SESSION['last_activity']=time();$_SESSION['display_name']=$u['full_name'];$_SESSION['role']=$u['role'];return $u;}
+function requireRole($user,$roles){if(!in_array($user['role'],$roles,true)){http_response_code(403);exit('You are not authorized to perform this action.');}}
