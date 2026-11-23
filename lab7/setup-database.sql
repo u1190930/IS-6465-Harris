@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
 );
 CREATE TABLE IF NOT EXISTS students (student_id INTEGER PRIMARY KEY, student_name TEXT NOT NULL, student_email TEXT NOT NULL UNIQUE, user_id INTEGER UNIQUE, FOREIGN KEY(user_id) REFERENCES users(user_id));
 CREATE TABLE IF NOT EXISTS tutoring_requests (request_id INTEGER PRIMARY KEY, student_id INTEGER NOT NULL, course TEXT NOT NULL, topic TEXT NOT NULL, preferred_date TEXT NOT NULL, preferred_time TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'Open' CHECK(status IN ('Open','Cancelled','Assigned','Completed')), created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(student_id) REFERENCES students(student_id));
-CREATE UNIQUE INDEX IF NOT EXISTS idx_students_user_id ON students(user_id) WHERE user_id IS NOT NULL;
 -- Classroom bootstrap account: admin@example.edu / password. Change or remove before deployment.
 INSERT OR IGNORE INTO users (full_name,email,password_hash,role,status) VALUES ('System Administrator','admin@example.edu','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.','Administrator','Active');
 INSERT OR ignore INTO students (student_name, student_email) VALUES ('Maria Lopez', 'maria.lopez@example.com');

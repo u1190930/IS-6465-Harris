@@ -10,7 +10,11 @@ This version uses PHP 7-compatible syntax and requires the PDO SQLite and mbstri
 
 ## Run in GitHub Codespaces
 
-1. From this folder, start with a fresh database if desired: `rm -f database/tutoring.db && sqlite3 database/tutoring.db < database/setup-database.sql`. Existing Lab 6 databases are upgraded on first connection.
+1. Choose one database path:
+   - **New Lab 7 database:** `rm -f database/tutoring.db && sqlite3 database/tutoring.db < database/setup-database.sql`
+   - **Existing Lab 6 database:** `sqlite3 database/tutoring.db < database/migrate-lab6-to-lab7.sql`, then run `sqlite3 database/tutoring.db < database/setup-database.sql`.
+
+   The migration script is intentionally a one-time operation. It adds `students.user_id` without removing existing Lab 6 students or tutoring requests.
 2. Run `php -S 0.0.0.0:8000 php/router.php` and open forwarded port 8000.
 3. Visit `/` or `/index.php`; it opens login. Create a Student or Tutor account at `/php/register.php`. The bootstrap administrator is `admin@example.edu` with password `password`; change or remove this classroom-only account before deployment.
 4. Students may submit, view, edit, and cancel only their own Open requests. Administrators may manage all requests and accounts. Tutors have no tutoring-request workflow.
